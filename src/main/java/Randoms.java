@@ -1,17 +1,13 @@
 import java.util.Iterator;
-import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator;
 import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Randoms implements Iterable<Integer> {
-    protected Random random;
-    private List<Integer> list;
+    protected PrimitiveIterator.OfInt random;
 
     public Randoms(int min, int max) {
-        this.random = new Random();
-        list = IntStream.range(min, max + 1).boxed().collect(Collectors.toList());
+        this.random = new Random().ints(min, max + 1).iterator();
     }
 
     @Override
@@ -19,17 +15,15 @@ public class Randoms implements Iterable<Integer> {
         return new Iterator<Integer>() {
             @Override
             public boolean hasNext() {
-                return list.size() > 0;
+                return random.hasNext();
             }
 
             @Override
             public Integer next() {
-                int size = list.size();
-                if (size == 0) {
+                if (!random.hasNext()) {
                     throw new NoSuchElementException();
                 }
-                int id = (int) (Math.random() * size);
-                return list.get(id);
+                return random.nextInt();
             }
         };
     }
